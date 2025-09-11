@@ -6,7 +6,7 @@
 
 2.  From **NCBI Virus**, query for segment, host=human (or avian for H5), country/region, and date; download FASTA + a few complete annotated references (GBFF/GFF). [NCBI](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/docs/help/?utm_source=chatgpt.com)
 
-3.  Open **Nextclade Web** → choose the influenza dataset matching your target (e.g., H3N2 HA) → drag in 50--200 recent sequences to see QC & clade assignment; keep a note of dominant clades in your region. [docs.nextstrain.org](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-web/getting-started.html?utm_source=chatgpt.com)
+3.  Open **Nextclade Web** → choose the influenza dataset matching your target (e.g., H3N2 HA) → drag in 50--200 recent sequences to see QC & clade assignment; keep a note of dominant clades in your region. [docs.nextstrain.org](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-web/getting-started.html)
 
 > **Tip:** You can also pull datasets for CLI work:
 
