@@ -1,4 +1,4 @@
-# Step 6: Troubleshooting (quick crib)
+# 6: Troubleshooting (quick crib)
 
 -   **Docker not found** (Windows): ensure WSL2 & Docker Desktop installed; restart Docker.
 -   **Nextclade TSV columns**: adjust `--group-by` to actual header names; ensure `name` matches FASTA headers.
