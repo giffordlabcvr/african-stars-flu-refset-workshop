@@ -18,7 +18,7 @@
 
 ## 1.2 Command line interface (CLI)-based approach: NCBI Nucleotide
 
-0. Install EDirect (macOS/Linux/WSL)
+### 1.2.0. Install EDirect (macOS/Linux/WSL)
 
 Script (official):
 
@@ -27,7 +27,7 @@ sh -c "$(curl -fsSL https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edi
 export PATH="$PATH:$HOME/edirect"
 ```
 
-### 1. Download by Publication Date (PDAT) → FASTA (and GBK)
+### 1.2.1 Download by Publication Date (PDAT) → FASTA (and GBK)
 
 ```
 # Raw FASTA for Alphainfluenzavirus (flu A), H3N2, South Africa, published 2018–2025
@@ -47,7 +47,7 @@ esearch -db nucleotide -query \
 grep -c '^>' sa_h3n2_pdat_2018_2025.fasta
 ```
 
-### 2. (Optional) Build a simple metadata table from GBK
+### 1.2.2 (Optional) Build a simple metadata table from GBK
 
 ```
 xtract -input sa_h3n2_pdat_2018_2025.gbk -pattern INSDSeq \
@@ -61,7 +61,7 @@ xtract -input sa_h3n2_pdat_2018_2025.gbk -pattern INSDSeq \
 # Columns: accession  organism  length  collection_date  geo_loc_name  segment  serotype  host
 ```
 
-### 3. (Optional “collection date” filtering locally)
+### 1.2.3 (Optional “collection date” filtering locally)
 
 Because `[Collection Date]` isn't indexed, filter the GBK-derived table yourself, then fetch exactly those accessions.
 
@@ -73,7 +73,7 @@ awk -F'\t' 'NR>1 && $NF>=2018 && $NF<=2025 {print $1}' metadata.tsv > keep_ids.t
 cat keep_ids.txt | epost -db nucleotide | efetch -format fasta > sa_h3n2_cd_2018_2025.fasta
 ```
 
-### 4. Hand-off to your Nextclade → augur step Send to → File → FASTA.
+### 1.2.4 Hand-off to your Nextclade → augur step Send to → File → FASTA.
 
 -   Use **Nextclade** on `sa_h3n2_pdat_2018_2025.fasta` (or the collection-date-filtered FASTA).
 -   Then proceed with your `augur index` / `augur filter` subsampling (clade × year × month).
@@ -81,15 +81,10 @@ cat keep_ids.txt | epost -db nucleotide | efetch -format fasta > sa_h3n2_cd_2018
 
 * * * * *
 
-## 1.3 GISAID EpiFlu (most complete for flu; account required)
+## 1.3 GISAID EpiFlu (most complete for flu; but account required)
 
-1.  Go to **[NCBI Nucleotide](https://www.ncbi.nlm.nih.gov/nuccore)**.
-
-2.  Use the query builder: A/H3N2, Location = South Africa, Date = 2018--2025.
-
-3.  Export: **FASTA + metadata** (CSV/TSV).
-
-4.  Data-use terms.
-
+-   Use the query builder: A/H3N2, Location = South Africa, Date = 2018--2025.
+-   Export: **FASTA + metadata** (CSV/TSV).
+-   Consider data-use terms.
 
 * * * * *
