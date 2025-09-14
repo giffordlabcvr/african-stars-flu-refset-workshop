@@ -46,7 +46,7 @@ Create prepared/anchors.txt with ~10–20 global reference IDs and include:
 --include tutorial_data/prepared/anchors.txt
 ```
 
-**What students should notice**
+**What to look out for**
 
 -   CLI reports drops/kept (e.g., "741 dropped... 149 kept").
 -   `curated.tsv` mirrors the distribution across clades/years/months.
