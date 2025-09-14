@@ -1,8 +1,6 @@
-# African STARS Fellowship: Influenza Virus Reference Set Workshop
+# Step 4 — Build & visualize (20 min, hands-on)
 
-## Step 4 — Build & visualize (20 min, hands-on)
-
-### 4.1 Align to reference
+## 4.1 Align to reference
 
 ```
 augur align \
@@ -12,7 +10,7 @@ augur align \
   --fill-gaps
 ```
 
-### 4.1 ML tree then time-refine
+## 4.2 ML tree then time-refine
 
 ```
 augur tree \
@@ -29,7 +27,7 @@ augur refine \
   --timetree
 ```
 
-### 4.3 (Optional) Traits/annotations
+## 4.3 (Optional) Traits/annotations
 
 ```
 augur traits \
@@ -39,7 +37,7 @@ augur traits \
   --columns clade year month country
 ```
 
-### 4.4 Export to Auspice & view
+## 4.4 Export to Auspice & view
 
 ```
 mkdir -p auspice
