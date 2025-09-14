@@ -1,4 +1,4 @@
-# Step 7: Mini-exercise (if time or as homework)
+# 7: Mini-exercise (if time or as homework)
 
 -   Change `--group-by` to `clade year` and set `--sequences-per-group 8`.
 -   Rebuild and compare the Auspice tree.
