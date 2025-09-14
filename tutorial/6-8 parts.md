@@ -1,22 +1,14 @@
-* * * * *
-
-6) Interpretation & discussion (10 min)
----------------------------------------
+# Step 6: Interpretation & discussion (10 min)
 
 -   Did the curated set avoid dominance by one month/outbreak?
-
 -   What changed when grouping by `year` vs `year+month`?
-
 -   Would grouping by **province** help if metadata were complete?
-
 -   What are the risks of **over-curation** (dropping real diversity)?
-
 -   How would you adapt rules for **H1N1**, **IBV**, or a **different country**?
 
 * * * * *
 
-7) Troubleshooting (quick crib)
--------------------------------
+# Step 7: Troubleshooting (quick crib)
 
 -   **Docker not found** (Windows): ensure WSL2 & Docker Desktop installed; restart Docker.
 
@@ -30,8 +22,8 @@
 
 * * * * *
 
-8) Mini-exercise (if time or as homework)
------------------------------------------
+
+# Step 8: Mini-exercise (if time or as homework)
 
 -   Change `--group-by` to `clade year` and set `--sequences-per-group 8`.
 
