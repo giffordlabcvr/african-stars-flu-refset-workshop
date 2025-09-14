@@ -26,7 +26,4 @@ augur export v2 --tree tree.nwk --metadata curated.tsv --node-data branch_length
 nextstrain view auspice/
 ```
 
-That's the full lesson: structured, time-boxed, with safety nets and exact commands. if you want, i can turn the "pipeline" into a single slide graphic you can drop into your deck.
-
-
 * * * * *
