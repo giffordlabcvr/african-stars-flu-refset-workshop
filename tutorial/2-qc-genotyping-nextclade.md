@@ -1,6 +1,6 @@
-## Step 2: QC & genotyping with Nextclade
+# Step 2: QC & genotyping with Nextclade
 
-### Option 1: Nextclade Desktop (preferred for class)
+## Option 1: Nextclade Desktop (preferred for class)
 
 1.  Open Nextclade Desktop → choose **Influenza A H3N2** dataset.
 
@@ -12,7 +12,7 @@
 
     -   Ensure it includes `name`, `clade`, `totalMissing`, `year`, `month`, `country` (some may come from your metadata join).
 
-### Option 2: Nextclade CLI (advanced)
+## Option 2: Nextclade CLI (advanced)
 
 ```
 nextclade run \
