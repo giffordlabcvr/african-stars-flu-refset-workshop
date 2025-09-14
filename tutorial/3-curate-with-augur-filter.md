@@ -1,65 +1,55 @@
-# Step 3 — Build & visualize (20 min, hands-on)
+# Step 3 — Curate with augur filter (35 min, hands-on)
 
-## 3.1 Align to reference
+## 3.1 Open a Nextstrain shell (Docker)
 
-```
-augur align \
-  --sequences curated.fasta \
-  --reference-sequence tutorial_data/reference/reference_h3n2.fasta \
-  --output aligned.fasta \
-  --fill-gaps
-```
-
-## 3.2 ML tree then time-refine
+From the directory containing your files:
 
 ```
-augur tree \
-  --alignment aligned.fasta \
-  --output tree_raw.nwk \
-  --nthreads 2
-
-augur refine \
-  --tree tree_raw.nwk \
-  --alignment aligned.fasta \
-  --metadata curated.tsv \
-  --output-tree tree.nwk \
-  --output-node-data branch_lengths.json \
-  --timetree
+docker run -it --rm -v "$PWD":/data -w /data nextstrain/base bash
 ```
 
-## 3.3 (Optional) Traits/annotations
+## 3.2 Index sequences (speeds up filtering)
 
 ```
-augur traits \
-  --tree tree.nwk \
-  --metadata curated.tsv \
-  --output-node-data traits.json \
-  --columns clade year month country
+augur index \
+  --sequences tutorial_data/raw/sa_h3n2_2018_2025.fasta \
+  --output raw.idx
 ```
 
-## 3.4 Export to Auspice & view
+## 3.3 Rule-based subsampling (clade × year × month)
+
+Start with 5 per group to land ~150–200 sequences:
 
 ```
-mkdir -p auspice
-augur export v2 \
-  --tree tree.nwk \
-  --metadata curated.tsv \
-  --node-data branch_lengths.json traits.json \
-  --output auspice/sa-h3n2-2018-2025.json
-
-nextstrain view auspice/
-# open http://localhost:4000
+augur filter \
+  --metadata tutorial_data/prepared/nextclade.tsv \
+  --sequences tutorial_data/raw/sa_h3n2_2018_2025.fasta \
+  --sequence-index raw.idx \
+  --metadata-id-columns name \
+  --group-by clade year month \
+  --sequences-per-group 5 \
+  --seed 4242 \
+  --output-sequences curated.fasta \
+  --output-metadata curated.tsv
 ```
 
-* * * * *
+**Tune size quickly**
 
-
-**Things to try:**
-
--   Colour by **clade**, then **year**.
--   Toggle **Tips only** vs full tree.
--   Search for a specific strain name.
--   If anchors were added, ask what context they provide.
+-   Too big? add `--subsample-max-sequences 160`
+-   Too small? increase `--sequences-per-group` or drop `month` from `--group-by`.
   
+## 3.4 (Optional) Add a few global anchors
+
+Create prepared/anchors.txt with ~10–20 global reference IDs and include:
+
+```
+--include tutorial_data/prepared/anchors.txt
+```
+
+**What students should notice**
+
+-   CLI reports drops/kept (e.g., "741 dropped... 149 kept").
+-   `curated.tsv` mirrors the distribution across clades/years/months.
+
 
 * * * * *
