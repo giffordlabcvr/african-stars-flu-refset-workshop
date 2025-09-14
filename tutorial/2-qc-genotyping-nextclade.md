@@ -1,4 +1,4 @@
-### Step 2 --- QC & genotyping with Nextclade
+## Step 2: QC & genotyping with Nextclade
 
 ### Option 1: Nextclade Desktop (preferred for class)
 
