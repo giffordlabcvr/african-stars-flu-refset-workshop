@@ -2,7 +2,7 @@
 
 ## Option 1: Nextclade Desktop (preferred for class)
 
-1.  Open Nextclade Desktop → choose **Influenza A H3N2** dataset.
+1.  Open **[Nextclade Desktop](https://clades.nextstrain.org/)** → choose **Influenza A H3N2** dataset.
 
 2.  Load `sa_h3n2_2018_2025.fasta`.
 
