@@ -27,19 +27,5 @@ How curated reference sets improve alignment
 
 -   **Speeds & stabilizes the algorithm**: fewer, better, more even sequences reduce pathological local optima and runtime.
 
-Concrete checklist (what we'll teach them to do)
-================================================
-
-1.  **Scope**: one segment/region; trim to the same biological unit (e.g., HA CDS).
-
-2.  **QC**: drop sequences failing Nextclade QC; remove sequences with lots of Ns/frameshifts; strip adapters/UTRs if mixing with CDS-only.
-
-3.  **Balance**: subsample by **clade × time (± geography)** to avoid redundancy.
-
-4.  **Seed/reference**: choose a standard H3N2 reference for alignment so coordinates/sites are comparable.
-
-5.  **Sanity checks post-MSA**: length distribution, gap heatmap, stop codons, obvious block misalignments.
-
-Put simply: **good inputs = good alignment**. Curation makes sequences truly comparable, which gives you clean MSAs, trustworthy trees, and meaningful site-level interpretation.
 
 * * * * *
