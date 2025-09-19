@@ -1,18 +1,41 @@
-# Step 1: Get a raw dataset (browser demo)
+# 1.1: Get a raw dataset - web-based approach: NCBI Nucleotide
 
-## 1.1 Web-based approach: NCBI Nucleotide
+### Step 1: Go to **[NCBI Nucleotide](https://www.ncbi.nlm.nih.gov/nuccore)**.
 
-1.  Go to **[NCBI Nucleotide](https://www.ncbi.nlm.nih.gov/nuccore)**.
+### Step 2: Enter search string
 
-2.  Search string:
+**Get all influenza A virus entries**:
+
+```
+Alphainfluenzavirus[Organism]
+```
+**Focus on subtype H3N2**:
+
+```
+Alphainfluenzavirus[Organism] AND H3N2[All Fields]
+```
+
+**Alphainfluenzavirus[Organism] AND 1500:1900[SLEN]**:
+
+```
+"Alphainfluenzavirus"[Organism] AND H3N2[All Fields] AND "South Africa"[All Fields]
+```
+**Get all influenza A virus entries**:
 
 ```
 "Alphainfluenzavirus"[Organism] AND H3N2[All Fields] AND "South Africa"[All Fields]
 ```
 
+
+
+
 3.  Show results & Publication date filter (Custom range → 2018/01/01 to 2025/12/31).
 
 4.  Send to → File → FASTA.
+
+
+
+   
 
 * * * * *
 
