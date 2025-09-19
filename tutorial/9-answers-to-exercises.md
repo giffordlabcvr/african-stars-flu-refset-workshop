@@ -1,4 +1,4 @@
-**Answer Key (for instructor / handout)**
+**Web-based approach: NCBI Nucleotide Queries**
 -----------------------------------------
 
 | Query # | Title | Number of Results |
