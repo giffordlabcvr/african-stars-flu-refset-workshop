@@ -52,4 +52,7 @@ Create prepared/anchors.txt with ~10–20 global reference IDs and include:
 -   `curated.tsv` mirrors the distribution across clades/years/months.
 
 
+Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/4-build-and-visualise.md)**
+
+
 * * * * *
