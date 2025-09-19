@@ -22,6 +22,7 @@ nextclade run \
 # Use nextclade_out/nextclade.tsv
 ```
 
+Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/3-curate-with-augur-filter.md)**
 
 
 * * * * *
