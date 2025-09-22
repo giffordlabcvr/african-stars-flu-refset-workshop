@@ -12,15 +12,6 @@
 
     -   Ensure it includes `name`, `clade`, `totalMissing`, `year`, `month`, `country` (some may come from your metadata join).
 
-## Option 2: Nextclade CLI (advanced)
-
-```
-nextclade run \
-  --input-dataset <path-to-H3N2-nextclade-dataset> \
-  --output-all nextclade_out/ \
-  sa_h3n2_2018_2025.fasta
-# Use nextclade_out/nextclade.tsv
-```
 
 Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/3-curate-with-augur-filter.md)**
 
