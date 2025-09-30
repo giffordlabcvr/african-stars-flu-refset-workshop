@@ -1,4 +1,4 @@
-## 3 (Optional): Command-line approach with data downloaded from **GISAID** (web)
+## 3 Command-line approach with data downloaded from **GISAID** (web)
 
 <img src="../images/gisaid.jpg" align="right" alt="" width="180"/>
 
