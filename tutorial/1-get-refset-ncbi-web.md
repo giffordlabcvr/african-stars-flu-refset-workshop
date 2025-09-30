@@ -6,7 +6,7 @@
 
 ### Step 2: Enter search string
 
-See **[here](https://www.ncbi.nlm.nih.gov/books/NBK49540/)** for a query syntax reference.
+**[Query syntax reference](https://www.ncbi.nlm.nih.gov/books/NBK49540/)** 
 
 Make a note how many entries are returned with each of the following queries (expected answers are provided at the bottom of this page): 
 
