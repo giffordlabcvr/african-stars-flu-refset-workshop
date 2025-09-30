@@ -1,4 +1,4 @@
-## 3 Command-line approach with data downloaded from **GISAID** (web)
+## 3 Command-line approach with Flu-GLUE
 
 <img src="../images/glue.png" align="right" alt="" width="180"/>
 
