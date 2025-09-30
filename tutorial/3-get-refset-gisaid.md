@@ -1,4 +1,4 @@
-## 1.3 (Optional): Command-line approach with data downloaded from **GISAID** (web)
+## 3 (Optional): Command-line approach with data downloaded from **GISAID** (web)
 
 <img src="../images/gisaid.jpg" align="right" alt="" width="180"/>
 
@@ -59,7 +59,7 @@ Each step includes a brief explanation and a **checkpoint** so students can veri
 
 * * * * *
 
-### 1.3.0. (One-time) Pull required images
+### 3.0. (One-time) Pull required images
 
 ```
 docker pull nextstrain/nextclade:latest
@@ -68,7 +68,7 @@ docker pull nextstrain/base
 
 * * * * *
 
-### 1.3.1.  Normalize FASTA headers 
+### 3.1.  Normalize FASTA headers 
 
 **a)** Normalize headers to the token before the first '|'.
 
@@ -96,7 +96,7 @@ grep '^>' gisaid_ha.acc.uniq.fasta | sort | uniq -d | sed -n '1,10p'
 
 * * * * *
 
-### 1.3.2. Nextclade QC + clades
+### 3.2. Nextclade QC + clades
 
 <img src="../images/nextstrain.png" align="right" alt="" width="100"/> 
 
@@ -150,7 +150,7 @@ docker run --rm -it \
 
 * * * * *
 
-### 1.3.3. Clean GISAID metadata
+### 3.3. Clean GISAID metadata
 
 <img src="../images/python.png" align="right" alt="" width="100"/>
 
@@ -168,7 +168,7 @@ GISAID's TSV often contains **quoted fields with commas and line breaks** (e.g.,
     -   fills missing parts with `01` so Augur can time-scale (e.g., `2023` → `2023-01-01`)
 
 -   Write a tidy **`meta_clean.tsv`**, keyed by `Isolate_Id`.\
-    (We'll harmonize South African province names later in **1.3.5b** so maps render cleanly.)
+    (We'll harmonize South African province names later in **3.5b** so maps render cleanly.)
 
 **Why Python *in Docker*?**\
 You don't need to install anything locally. The `nextstrain/base` image already has Python, so the command below runs a one-off Python script **inside the container**, reading/writing files from your current folder (mounted at `/data`).
@@ -245,13 +245,13 @@ head -3 meta_clean.tsv
 
 -   Leave empty values as empty strings; Augur/Auspice tolerate missing fields.
 -   Don't "fix" the TSV in Excel/Numbers (they may change tabs/quotes). If you must open it, re-export as **tab-delimited UTF-8**.
--   `division` is the **province/state** level for mapping. We'll normalize South African province strings in **1.3.5b** for clean map layers
+-   `division` is the **province/state** level for mapping. We'll normalize South African province strings in **3.5b** for clean map layers
 
 
 * * * * *
 
 
-### 1.3.4 Merge metadata + Nextclade
+### 3.4 Merge metadata + Nextclade
 
 
 <img src="../images/python.png" align="right" alt="" width="100"/>
@@ -313,7 +313,7 @@ PY
 
 * * * * *
 
-### 1.3.5 Augur: downsample, align, tree, refine
+### 3.5 Augur: downsample, align, tree, refine
 
 We'll keep **≤10 sequences per clade per year** (tune as needed
 
@@ -454,7 +454,7 @@ echo "Curated seqs:" $(grep -c '^>' curated.fasta)
 * * * * *
 
 
-### 1.3.6 Export to Auspice & view
+### 3.6 Export to Auspice & view
 
 Make a directory for the auspice data.
 
@@ -492,7 +492,7 @@ Open: `http://localhost:4010/gisaid-h3n2-ha`
 
 
 
-### 1.3.7 (Optional) Add **your own sequences** to the tree
+### 3.7 (Optional) Add **your own sequences** to the tree
 
 **Prepare your files**
 
