@@ -9,7 +9,7 @@ This optional path shows an end-to-end, reproducible workflow using **NCBI EDire
 > - Docker (for Nextclade & Nextstrain tools)
 > - A "master" reference sequence (we'll fetch it; you can also use your pre-chosen one)
 
-Alternatively, you can proceed with tutorial by utilising a dataset previously downloaded from **GISAID**, as described **[here](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/3-get-refset-gisaid.md)**.  
+Alternatively, you can proceed with tutorial by utilising a dataset downloaded from **GISAID**, as described **[here](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/3-get-refset-gisaid.md)**.  
 
 
 * * * * *
