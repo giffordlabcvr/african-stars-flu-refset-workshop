@@ -1,4 +1,4 @@
-## 2. NCBI Nucleotide - Command line interface (CLI)-based approach (Optional) 
+## 2. NCBI Nucleotide - Command line interface (Optional) 
 
 <img src="../images/ncbi.jpg" align="right" alt="" width="110"/>
 
