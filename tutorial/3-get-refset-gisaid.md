@@ -152,7 +152,7 @@ docker run --rm -it \
 
 ### 1.3.3. Clean GISAID metadata
 
-<img src="../images/python.png" align="right" alt="" width="120"/>
+<img src="../images/python.png" align="right" alt="" width="100"/>
 
 **What & why?**\
 GISAID's TSV often contains **quoted fields with commas and line breaks** (e.g., in *Publication*). Shell tools like `cut` / `awk` can choke on these. We therefore use **Python's CSV reader** (which correctly handles quoting and embedded newlines) to:
@@ -224,20 +224,40 @@ print(f"Wrote {outp}")
 PY
 ```
 
-✅ **Checkpoint:** `meta_clean.tsv` exists.\
-(Optional sanity check counts:)
+✅ **Checkpoint**
+
+-   `ls -lh meta_clean.tsv` (file exists)
+-   Rows roughly match your sequence count:
 
 ```
 echo "FASTA seqs:" $(grep -c '^>' gisaid_ha.acc.uniq.fasta)
 echo "metadata rows:" $(tail -n +2 meta_clean.tsv | wc -l)
 ```
 
+-   Quick peek at columns:
+  
+```
+head -1 meta_clean.tsv | tr '\t' '\n' | nl
+head -3 meta_clean.tsv
+```
+
+**Notes & gotchas**
+
+-   Leave empty values as empty strings; Augur/Auspice tolerate missing fields.
+-   Don't "fix" the TSV in Excel/Numbers (they may change tabs/quotes). If you must open it, re-export as **tab-delimited UTF-8**.
+-   `division` is the **province/state** level for mapping. We'll normalize South African province strings in **1.3.5b** for clean map layers
+
+
 * * * * *
 
 
 ### 1.3.4 Merge metadata + Nextclade
 
+
+<img src="../images/python.png" align="right" alt="" width="100"/>
+
 We map `nextclade.tsv` to `Isolate_Id` (the **same IDs** you put in FASTA headers).
+
 
 ```
 docker run --rm -i -v "$PWD":/data -w /data nextstrain/base \
