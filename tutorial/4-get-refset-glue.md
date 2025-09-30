@@ -1,6 +1,6 @@
 ## 3 Command-line approach with data downloaded from **GISAID** (web)
 
-<img src="../images/gisaid.jpg" align="right" alt="" width="180"/>
+<img src="../images/glue.png" align="right" alt="" width="180"/>
 
 ### 1. Download the isolate table
 
@@ -45,8 +45,54 @@ nextclade run \
   H3N2_HA.fasta
 ```
 
-### 6 Build a tree with Augur & view in Auspice
+This produces:
 
-Parallel to the GISAID workflow.
+-   `nextclade_H3N2/nextclade.aligned.fasta` (aligned sequences)
+-   `nextclade_H3N2/nextclade.tsv` (QC + clades)
+
+### 6. Build a tree with Augur & view in Auspice
+
+```
+augur tree \
+  --alignment nextclade_H3N2/nextclade.aligned.fasta \
+  --output-tree H3N2.tree.nwk
+```
+
+Optionally refine with metadata:
+
+```
+augur refine \
+  --tree H3N2.tree.nwk \
+  --alignment nextclade_H3N2/nextclade.aligned.fasta \
+  --metadata iav_isolates_H3N2.tsv \
+  --output-tree H3N2.refined.tree.nwk \
+  --output-node-data H3N2.refined.node.json
+```
+
+### 7. Export to Auspice JSON
+
+```
+augur export v2 \
+  --tree H3N2.refined.tree.nwk \
+  --metadata iav_isolates_H3N2.tsv \
+  --node-data H3N2.refined.node.json \
+  --output auspice/H3N2.json
+```
+
+
+### 8. Export to Auspice JSON
+
+Run inside a Nextstrain Docker container (or local install):
+
+```
+docker run -it --rm \
+  -v "$PWD":/data -w /data \
+  -p 4000:4000 nextstrain/base \
+  auspice view --datasetDir auspice --host 0.0.0.0
+```
+
+Then open:
+
+👉 <http://localhost:4000>[](http://localhost:4000)
 
 * * * * *
