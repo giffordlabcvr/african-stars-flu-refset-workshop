@@ -1,4 +1,4 @@
-## 1: Get a raw dataset - web-based approach: NCBI Nucleotide
+## 1. Get a raw dataset - web-based approach: NCBI Nucleotide
 
 ### Step 1: Go to **[NCBI Nucleotide](https://www.ncbi.nlm.nih.gov/nuccore)**.
 
