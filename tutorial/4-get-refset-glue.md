@@ -83,7 +83,9 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur export v2 \
   --metadata iav_nuccore_isolates.tsv \
   --node-data H3N2.refined.node.json \
   --output auspice/H3N2.json
+```
 
+```
 docker run -it --rm -v "$PWD":/data -w /data -p 4000:4000 nextstrain/base \
   auspice view --datasetDir auspice --host 0.0.0.0
 # open http://localhost:4000
