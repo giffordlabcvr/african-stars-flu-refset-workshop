@@ -35,13 +35,20 @@ cut -f4,12,13,14,15 iav_isolates_H3N2.tsv | cut -f12 > H3N2_HA_accessions.txt
     -   (Better: use `awk -F'\t' '{print $13}'` since segment4 is column 13 in your example file --- we'll double-check column indices before finalizing.)
 
       
-### 4.4. Extract HA accessions
-
+### 4.4. Fetch Sequences
 ```
-cat H3N2_HA_accessions.txt | \
-  while read acc; do
-    efetch -db nucleotide -id "$acc" -format fasta >> H3N2_HA.fasta
+# Join every 200 IDs into a comma-separated batch and fetch
+: > H3N2_HA.fasta
+awk 'NR%200==1{printf "%s",$0; next} NR%200>1{printf ",%s",$0} NR%200==0{print ""} END{if(NR%200) print ""}' \
+  H3N2_HA_accessions.txt \
+| while IFS= read -r batch; do
+    efetch -db nucleotide -id "$batch" -format fasta >> H3N2_HA.fasta
+    sleep 0.34   # be polite to NCBI; set NCBI_API_KEY to go faster
   done
+
+# Quick check
+grep -c '^>' H3N2_HA.fasta
+
 ```
 
 (using `ncbi-entrez-direct` package)
