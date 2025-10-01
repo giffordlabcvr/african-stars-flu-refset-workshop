@@ -589,11 +589,23 @@ This sets you up for export & visualization. Next we’ll run augur export v2 an
 
 ### 2.6 Export to Auspice & view
 
-Make a directory for the auspice data.
+**What this step does (and why):**\
+`augur export v2` converts your refined tree + metadata into an **Auspice v2 JSON** that the web viewer understands. You can control:
+
+-   **Color options** in the UI (`--color-by-metadata`)
+-   **Which geo layers** appear on the map (`--geo-resolutions`)
+-   Extra fields to keep in node data (`--metadata-columns`)
+-   Sidebar details (`--title`, `--maintainers`)
+
+We use `curated_geo.tsv` (from the province normalization step) so **country + province** map layers render cleanly.
+
+**Make the output folder**
 
 ```
 mkdir -p auspice
 ```
+
+**Export to Auspice JSON**
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -608,6 +620,20 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --output auspice/gisaid-h3n2-ha.json
 ```
 
+-   `--color-by-metadata ...` → items that appear under **Color by** in Auspice.
+-   `--metadata-columns date` → keep `date` in node data without adding it as a color option.
+-   `--geo-resolutions country division` → enables **country** and **province** map layers.\
+    (We **omit `location`** unless you supply a lat/longs file---see **Advanced** below.)
+-   `--title / --maintainers` → removes the small warnings and gives a tidy sidebar.
+    
+✅ Checkpoint
+
+```
+ls -lh auspice/gisaid-h3n2-ha.json    # file exists & non-empty
+```
+
+**Serve the JSON locally with Auspice**
+
 ```
 docker run -it --rm \
   -v "$PWD":/data -w /data \
@@ -618,8 +644,25 @@ docker run -it --rm \
 
 Open: `http://localhost:4010/gisaid-h3n2-ha`
 
-✅ **Checkpoint:** In Auspice, try **Color by**: `nextclade_clade`, `year`, `country`.
+✅ **In the viewer:** try **Color by** → `nextclade_clade`, `year`, `country`, `division`.\
+Use the **Map** tab to toggle between **Country** and **Division** layers.
 
+---
+
+#### Notes & gotchas
+
+-   **Port already in use?** Use a different host port (e.g., 4011):
+```
+docker run -it --rm -v "$PWD":/data -w /data -p 4011:4000 nextstrain/base \
+  nextstrain view --host 0.0.0.0 auspice/
+# open http://localhost:4011/gisaid-h3n2-ha
+```
+-   To free a busy 4010: `docker ps --filter "publish=4010" -q | xargs -r docker stop`
+-   **Stop Auspice cleanly:** press **Ctrl+C** in the terminal where it's running.\
+    (If detached, `docker stop <container>`.)
+-   **Schema warnings during export:**\
+    Province mismatches usually mean the **normalization step wasn't run** or you exported with `--geo-resolutions location` but didn't supply lat/longs. Stick to `country division`, or see **Advanced** below.
+-   **Older Augur flags:** If your image complains about `--color-by-metadata`, switch to `nextstrain/cli:latest`, or check `augur export v2 -h` to see supported flags.
 
 * * * * *
 
