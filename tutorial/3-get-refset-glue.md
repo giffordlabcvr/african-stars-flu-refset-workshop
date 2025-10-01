@@ -52,6 +52,9 @@ awk -F'\t' -v rc="$REC_COL" -v hc="$HOST_COL" -v yc="$YEAR_COL" -v sc="$SEG4_COL
 
 ```
 wc -l H3N2_candidates.tsv
+```
+
+```
 head -3 H3N2_candidates.tsv
 ```
 
@@ -79,6 +82,9 @@ awk -F'\t' -v sc="$SEG4_COL" 'NR>1 && $sc!="" {print $sc}' H3N2_candidates_noUSA
 
 ```
 wc -l H3N2_HA_accessions.txt
+```
+
+```
 sed -n '1,5p' H3N2_HA_accessions.txt
 ```
 
