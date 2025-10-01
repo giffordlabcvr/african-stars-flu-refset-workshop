@@ -253,7 +253,6 @@ head -3 meta_clean.tsv
 
 ### 2.4 Merge metadata + Nextclade
 
-
 <img src="../images/python.png" align="right" alt="" width="100"/>
 
 **What this step does (and why):**
