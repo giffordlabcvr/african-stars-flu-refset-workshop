@@ -102,6 +102,9 @@ awk 'NR%200==1{printf "%s",$0; next} NR%200>1{printf ",%s",$0} NR%200==0{print "
 
 ```
 grep -c '^>' H3N2_HA.fasta
+```
+
+```
 head -n 2 H3N2_HA.fasta
 ```
 
