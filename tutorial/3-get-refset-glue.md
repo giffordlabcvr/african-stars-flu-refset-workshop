@@ -249,13 +249,14 @@ ls -lh H3N2.tree.nwk H3N2.refined.tree.nwk H3N2.refined.node.json
 ### 3.10. Export to Auspice
 
 ```
-# Export for Auspice + view
 mkdir -p auspice
-docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur export v2 \
-  --tree H3N2.refined.tree.nwk \
-  --metadata iav_nuccore_isolates.tsv \
-  --node-data H3N2.refined.node.json \
-  --output auspice/H3N2.json
+docker run --rm -it -v "$PWD":/data -w /data nextstrain/base \
+  augur export v2 \
+    --tree H3N2.refined.tree.nwk \
+    --metadata iav_nuccore_isolates.tsv \
+    --metadata-id-columns segment4_accession \
+    --node-data H3N2.refined.node.json \
+    --output auspice/H3N2.json
 ```
 
 ✅ **Checkpoint:**
