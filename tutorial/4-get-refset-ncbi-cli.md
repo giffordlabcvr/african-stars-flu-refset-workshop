@@ -9,13 +9,11 @@ This optional path shows an end-to-end, reproducible workflow using **NCBI EDire
 > - Docker (for Nextclade & Nextstrain tools)
 > - A "master" reference sequence (we'll fetch it; you can also use your pre-chosen one)
 
-Alternatively, you can proceed with tutorial by utilising a dataset downloaded from **GISAID**, as described **[here](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/3-get-refset-gisaid.md)**.  
-
 
 * * * * *
 
 
-### 2.0. Install EDirect (macOS/Linux/WSL) - One-off Install 
+### 4.0. Install EDirect (macOS/Linux/WSL) - One-off Install 
 
 Script (official):
 
@@ -27,7 +25,7 @@ export PATH="$PATH:$HOME/edirect"
 
 * * * * *
 
-### 2.1 Fetch **HA-only** sequences (H3N2, South Africa, 2000--2025)
+### 4.1 Fetch **HA-only** sequences (H3N2, South Africa, 2000--2025)
 
 **Why this query?** It limits to influenza A (H3N2), **HA gene** only, South Africa, 2000--2025, with a length guard typical for HA (1,500--1,900 nt).
 
@@ -59,7 +57,7 @@ AND 1500:1900[SLEN]' \
 
 * * * * *
 
-### 2.2 Nextclade (Docker) --- download dataset & run QC/genotyping
+### 4.2 Nextclade (Docker) --- download dataset & run QC/genotyping
 
 <img src="../images/nextstrain.png" align="right" alt="" width="100"/> 
 
@@ -108,7 +106,7 @@ docker run --rm -it \
 * * * * *
 
 
-### 2.3 Extract minimal metadata from GBK and join with Nextclade
+### 4.3 Extract minimal metadata from GBK and join with Nextclade
 
 We'll take **accession**, **collection_date**, **geo_loc_name** from GBK and join to Nextclade results. Nextclade's `seqName` often includes long descriptions; we'll map it to the accession by taking the **first token**.
 
@@ -163,7 +161,7 @@ PY
 * * * * *
 
 
-### 2.4 Add `date`/`year`/`month` and ensure a `strain` column
+### 4.4 Add `date`/`year`/`month` and ensure a `strain` column
 
 Augur expects a `date` column (parsable) and uses **`strain`** (or `name`) to match metadata to tip names. We'll derive date fields and add `strain = accession`.
 
@@ -228,7 +226,7 @@ awk 'BEGIN{FS=OFS="\t"} NR==1{print "strain",$0; next} {print $1,$0}' \
 * * * * *
 
 
-### 2.5. Normalise FASTA headers to **accession only**
+### 4.5. Normalise FASTA headers to **accession only**
 
 This ensures tip names match `strain`.
 
@@ -240,7 +238,7 @@ awk 'BEGIN{OFS=""}
 ```
 
 
-### 2.6. Use your **master reference** for alignment
+### 4.6. Use your **master reference** for alignment
 
 If you are using a pre-chosen master reference (e.g. **[CY033009.1](www.ncbi.nlm.nih.gov/nuccore/CY033009.1)**):
 
@@ -252,7 +250,7 @@ efetch -db nucleotide -id CY033009.1 -format fasta > reference_h3n2.fasta
 * * * * *
 
 
-### 2.7. Subsample with Augur, align to reference, build tree
+### 4.7. Subsample with Augur, align to reference, build tree
 
 > We use `nextstrain/base` image. (It may not support `--seed`; that’s OK.)
 
@@ -310,7 +308,7 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
 
 * * * * *
 
-### 2.8. Export for Auspice & view (be explicit about fields + host binding)
+### 4.8. Export for Auspice & view (be explicit about fields + host binding)
 
 Older Augur exports may not auto-expose color fields. Specify them explicitly.
 
@@ -341,7 +339,7 @@ You should now be able to **Color by**: `clade`, `year`, `month`, `geo_loc_name`
 
 * * * * *
 
-### 2.9. (Option B) Skip `augur align` by using Nextclade's aligned output
+### 4.9. (Option B) Skip `augur align` by using Nextclade's aligned output
 
 If you prefer fewer steps, you can have Nextclade write an aligned FASTA and reuse it:
 
