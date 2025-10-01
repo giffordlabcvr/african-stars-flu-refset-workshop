@@ -15,7 +15,7 @@ Alternatively, you can proceed with tutorial by utilising a dataset downloaded f
 * * * * *
 
 
-### 2.0. Install EDirect (macOS/Linux/WSL)
+### 2.0. Install EDirect (macOS/Linux/WSL) - One-off Install 
 
 Script (official):
 
