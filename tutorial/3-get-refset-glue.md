@@ -18,12 +18,12 @@ head -1 iav_nuccore_isolates.tsv | tr '\t' '\n' | nl
 Now set environment variables to the **column numbers** (from the left, starting at 1):
 
 ```
-# Example names; adjust numbers to match YOUR header indices
-export REC_COL=1            # column containing subtype/record info (e.g., "H3N2 ...")
-export HOST_COL=2           # host (e.g., "Homo sapiens")
-export YEAR_COL=3           # collection year (e.g., 2018)
-export CTRY_COL=4           # country (e.g., "USA")
-export SEG4_COL=5           # segment4_accession (HA nucleotide accession)
+# Column indices from your header listing
+export REC_COL=3     # rec_serotype       (e.g., H3N2)
+export HOST_COL=9    # host               (e.g., Homo sapiens)
+export YEAR_COL=6    # iso_year           (e.g., 2018)
+export CTRY_COL=12   # iso_country        (e.g., USA)
+export SEG4_COL=17   # segment4_accession (HA nucleotide accession)
 ```
 ✅ **Checkpoint:** echo them back
 
