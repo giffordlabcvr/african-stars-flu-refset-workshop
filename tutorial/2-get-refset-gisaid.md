@@ -361,9 +361,14 @@ sed -n '1,10p' nextclade_unmatched_ids.txt
 
 ### 2.5 Augur: downsample, align, tree, refine
 
-We'll keep **≤10 sequences per clade per year** (tune as needed
+**Goal:** take your full dataset and produce a tidy, time-scaled tree that's fast to view in Auspice.\
+**Strategy:** Downsample to keep the tree readable (e.g., **≤10 sequences per clade per year** --- tune this to taste), then align, infer a tree, and refine it in time using collection dates.
 
-**a) Index** 
+---
+
+#### a) Index (speed up downstream filtering)
+
+`augur index` makes a lightweight index over your FASTA so `augur filter` runs faster and uses less memory.
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -372,7 +377,17 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --output raw.idx
 ```
 
-**b) Filter**  (downsample):
+✅ **Checkpoint:** `raw.idx` exists (small file).
+
+**Why this matters:** For larger datasets the index prevents repeated FASTA scans.
+
+---
+
+#### b) Filter (downsample to a manageable, representative set)
+
+We select a subset stratified by **clade** and **year** (10 per stratum).\
+The join key is `strain` (first column of your metadata) which must match the **FASTA headers** (we normalized these earlier).
+
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -387,11 +402,33 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --output-metadata curated.tsv
 ```
 
-**c) Normalise South African province names (recommended for maps)**
+✅ **Checkpoints**
 
-Auspice expects canonical province names. This step cleans common variants (e.g., "Guateng", "Province of ...", different casings) so the **division** map layer renders correctly.
+-   Files exist: `curated.fasta`, `curated.tsv`
+-   Count looks sane:
+```
+echo "Curated seqs:" $(grep -c '^>' curated.fasta)
+echo "Curated rows:" $(tail -n +2 curated.tsv | wc -l)
+```
 
-Run this on the downsampled metadata (`curated.tsv`) to produce `curated_geo.tsv`:
+-   If the count is **0 or very small**, you may have:
+    -   Very sparse clade/year combinations → reduce grouping (e.g., `--group-by year`)
+    -   Strict QC you want to apply → add `--query "qc.overallStatus in ['pass','warn']"`\
+        (or run QC filtering earlier when building metadata)
+
+**Notes**
+
+-   Reproducibility: some Augur versions support `--subsample-seed` (or `--seed`) on `filter`. If your `nextstrain/base` lacks it, switch to `nextstrain/cli:latest`.
+-   You can group by other fields (e.g., `country`), but ensure those columns exist in `metadata_final.tsv`.
+
+---
+
+
+#### c) Normalise South African province names (recommended for maps)
+
+Auspice expects canonical province names. This harmonises common variants (e.g., *Guateng*, *Province of ...*, different casings) so the **division** map layer renders.
+
+Run this on the **downsampled** metadata (`curated.tsv`) to produce `curated_geo.tsv`:
 
 ```
 docker run --rm -i -v "$PWD":/data -w /data nextstrain/base \
@@ -452,13 +489,17 @@ PY
 
 ✅ **Checkpoint:** `curated_geo.tsv` exists.
 
-To eyeball:
+Eyeball unique province names:
 ```
 awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="division"){c=i;break;}; next} {print $c}' \
   curated_geo.tsv | sort -u | sed -n '1,15p'
 ```
-  
-**d) Align** (or use Nextclade-aligned if you prefer):
+
+---
+
+#### d) Align (multiple sequence alignment)
+
+Build an MSA for tree inference. (If you output an aligned FASTA from Nextclade earlier, you can reuse that and skip this step.)
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -468,7 +509,19 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --fill-gaps
 ```
 
-**e) Reconstruct tree**
+✅ **Checkpoint:** `aligned.fasta` exists and has the same number of sequences as `curated.fasta`.
+
+**Alternative:** If you generated `/data/nextclade_aligned.fasta` in the Nextclade step, you can:
+```
+cp nextclade_aligned.fasta aligned.fasta
+```
+...and skip `augur align`.
+
+---
+
+#### e) Tree (phylogenetic inference)
+
+Infer a maximum-likelihood tree from the alignment.
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -478,7 +531,18 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --nthreads 2
 ```
 
-**f) Refine** (time-scale + metadata): 
+✅ **Checkpoint:** `tree_raw.nwk` exists.
+
+**Notes**
+
+-   `--nthreads` speeds up tree building on multi-core machines.
+-   For very small sets, this is quick; for larger, consider increasing threads or further downsampling.
+
+---
+
+#### f) Refine (time-scale the tree + attach metadata)
+
+Refine does date inference (using `date`/`year`/`month` from your metadata) and writes a time-scaled tree.
 
 ```
 docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
@@ -490,12 +554,30 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
     --timetree
 ```
 
-✅ **Checkpoint:** `curated.fasta`, `aligned.fasta`, `tree.nwk` exist.
+✅ **Checkpoint:** tree.nwk exists (final time-scaled tree).
 
 ```
 echo "Curated seqs:" $(grep -c '^>' curated.fasta)
 ```
 
+---
+
+### Common gotchas (and fast fixes)
+
+-   **"Sequence ids must be unique."**\
+    Re-check header normalization & de-dup (Section 1.3.1) and ensure `--metadata-id-columns strain` matches the **FASTA headers**.
+
+-   **Downsampling removed everything.**\
+    Try fewer grouping fields (e.g., `--group-by nextclade_clade` **only**) or increase `--sequences-per-group`.
+
+-   **Dates missing / bad** → time tree looks odd.\
+    Ensure `date`/`year`/`month` exist (Section 1.3.3). If many are missing, refine has little temporal signal.
+
+-   **Province map not rendering later in Auspice.**\
+    Make sure you ran the **province normaliser** above and use `curated_geo.tsv` for refine and export.
+
+-   **Reproducible subsampling**\
+    Use a seed on `augur filter` if your Augur build supports it (or switch to `nextstrain/cli:latest`).
 
 * * * * *
 
