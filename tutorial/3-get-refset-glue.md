@@ -152,44 +152,93 @@ sed -n '2,4p' H3N2_HA.metadata.tsv
 
 ### 3.8. Nextclade: fetch H3N2 HA dataset & run
 
-Pull image (once)
-
+#### Pull image (once)
 
 ```
 docker pull nextstrain/nextclade:latest
 ```
 
+#### (Optional) Browse datasets
 
 ```
-# Nextclade
-docker run --rm -it -v "$PWD":/data -w /data nextstrain/nextclade:latest run \
-  --input-dataset flu/h3n2/ha \
-  --output-dir nextclade_H3N2 \
-  H3N2_HA.fasta
+docker run --rm -it nextstrain/nextclade:latest \
+  nextclade dataset list --search "h3n2 ha" | head -n 30
 ```
+
+#### Get the dataset into host cache (~/.nextclade)
+
+```
+docker run --rm -it \
+  -v "$HOME/.nextclade":/root/.nextclade \
+  nextstrain/nextclade:latest \
+  nextclade dataset get \
+    --name nextstrain/flu/h3n2/ha \
+    --output-dir /root/.nextclade/datasets/h3n2_ha
+```
+
+#### Run Nextclade (outputs to ./nextclade_H3N2/)
+
+```
+mkdir -p nextclade_H3N2
+docker run --rm -it \
+  -v "$PWD":/data -w /data \
+  -v "$HOME/.nextclade":/root/.nextclade \
+  nextstrain/nextclade:latest \
+  nextclade run \
+    --input-dataset /root/.nextclade/datasets/h3n2_ha \
+    --output-all nextclade_H3N2 \
+    --output-basename nextclade \
+    H3N2_HA.fasta
+```
+
+✅ **Checkpoint:**
+
+```
+ls -lh nextclade_H3N2/
+head -3 nextclade_H3N2/nextclade.tsv
+```
+
+We'll reuse Nextclade's **aligned FASTA**: `nextclade_H3N2/nextclade.aligned.fasta`.
 
 * * * * *
 
-### 3.5. Augur: tree + refine
+### 3.9. Augur: tree + refine
+
+#### Tree
 
 ```
-docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur tree \
-  --alignment nextclade_H3N2/nextclade.aligned.fasta \
-  --output-tree H3N2.tree.nwk
+docker run --rm -it -v "$PWD":/data -w /data nextstrain/base \
+  augur tree \
+    --alignment nextclade_H3N2/nextclade.aligned.fasta \
+    --output H3N2.tree.nwk
 ```
 
+**Refine (time-scale + metadata)**\
+We point Augur at the **original NCBI TSV** and tell it that the sequence name column is **`segment4_accession`** (this matches our FASTA headers: ACCESSION.VERSION).
+
 ```
-docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur refine \
-  --tree H3N2.tree.nwk \
-  --alignment nextclade_H3N2/nextclade.aligned.fasta \
-  --metadata iav_nuccore_isolates.tsv \
-  --output-tree H3N2.refined.tree.nwk \
-  --output-node-data H3N2.refined.node.json
+docker run --rm -it -v "$PWD":/data -w /data nextstrain/base \
+  augur refine \
+    --tree H3N2.tree.nwk \
+    --alignment nextclade_H3N2/nextclade.aligned.fasta \
+    --metadata iav_nuccore_isolates.tsv \
+    --metadata-id-columns segment4_accession \
+    --output-tree H3N2.refined.tree.nwk \
+    --output-node-data H3N2.refined.node.json
 ```
+
+✅ **Checkpoint:**
+
+```
+ls -lh H3N2.tree.nwk H3N2.refined.tree.nwk H3N2.refined.node.json
+```
+
+
+
 
 * * * * *
 
-### 3.6. View in Auspice
+### 3.10. Export to Auspice
 
 ```
 # Export for Auspice + view
@@ -201,6 +250,17 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur export v2 \
   --output auspice/H3N2.json
 ```
 
+✅ **Checkpoint:**
+
+```
+ls -lh auspice/H3N2.json
+```
+
+* * * * *
+
+### 3.11. View in Auspice
+
+
 ```
 docker run -it --rm -v "$PWD":/data -w /data -p 4000:4000 nextstrain/base \
   auspice view --datasetDir auspice --host 0.0.0.0
@@ -210,5 +270,8 @@ docker run -it --rm -v "$PWD":/data -w /data -p 4000:4000 nextstrain/base \
 Then open:
 
 👉 <http://localhost:4000>[](http://localhost:4000)
+
+
+✅ Checkpoint (in the UI): Try Color by fields you exported (e.g., year, country, or QC/clade if you add them via node-data or merged metadata).
 
 * * * * *
