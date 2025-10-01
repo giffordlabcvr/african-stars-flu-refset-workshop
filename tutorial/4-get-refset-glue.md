@@ -2,13 +2,23 @@
 
 <img src="../images/glue.png" align="right" alt="" width="180"/>
 
-### 1. Download the isolate table
+### 4.0. Install EDirect (macOS/Linux/WSL) - One-off Install 
+
+Script (official):
+
+```
+sh -c "$(curl -fsSL https://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)"
+export PATH="$PATH:$HOME/edirect"
+```
+
+
+### 4.1. Download the isolate table
 
 ```
 wget https://raw.githubusercontent.com/giffordlabcvr/Flu-GLUE/refs/heads/main/tabular/extension/iav_nuccore_isolates.tsv -O iav_isolates.tsv
 ```
 
-### 2. Extract HA accessions
+### 4.2. Extract HA accessions
 
 ```
 awk -F'\t' '$3 == "H3N2"' iav_isolates.tsv > iav_isolates_H3N2.tsv
@@ -16,7 +26,7 @@ awk -F'\t' '$3 == "H3N2"' iav_isolates.tsv > iav_isolates_H3N2.tsv
     -   Column 3 = `rec_serotype`.
     -   You can replace `"H3N2"` with `"H1N1"` etc. for other gene sets.
 
-### 3. Extract HA accessions
+### 4.3. Extract HA accessions
 
 ```
 cut -f4,12,13,14,15 iav_isolates_H3N2.tsv | cut -f12 > H3N2_HA_accessions.txt
@@ -25,7 +35,7 @@ cut -f4,12,13,14,15 iav_isolates_H3N2.tsv | cut -f12 > H3N2_HA_accessions.txt
     -   (Better: use `awk -F'\t' '{print $13}'` since segment4 is column 13 in your example file --- we'll double-check column indices before finalizing.)
 
       
-### 4. Extract HA accessions
+### 4.4. Extract HA accessions
 
 ```
 cat H3N2_HA_accessions.txt | \
@@ -36,7 +46,7 @@ cat H3N2_HA_accessions.txt | \
 
 (using `ncbi-entrez-direct` package)
 
-### 5. Run through Nextclade
+### 4.5. Run through Nextclade
 
 ```
 nextclade run \
@@ -50,7 +60,7 @@ This produces:
 -   `nextclade_H3N2/nextclade.aligned.fasta` (aligned sequences)
 -   `nextclade_H3N2/nextclade.tsv` (QC + clades)
 
-### 6. Build a tree with Augur & view in Auspice
+### 4.6. Build a tree with Augur & view in Auspice
 
 ```
 augur tree \
@@ -69,7 +79,7 @@ augur refine \
   --output-node-data H3N2.refined.node.json
 ```
 
-### 7. Export to Auspice JSON
+### 4.7. Export to Auspice JSON
 
 ```
 augur export v2 \
@@ -80,7 +90,7 @@ augur export v2 \
 ```
 
 
-### 8. Export to Auspice JSON
+### 4.8. Export to Auspice JSON
 
 Run inside a Nextstrain Docker container (or local install):
 
