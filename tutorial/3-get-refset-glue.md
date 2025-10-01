@@ -1,9 +1,8 @@
 ## 3. Command-line approach with Flu-GLUE
 
- 
-
 ### 3.1. Download the isolate table
 
+Download Flu-GLUE's alphainfluenzavirus isolate table **[here](https://github.com/giffordlabcvr/Flu-GLUE/blob/main/tabular/extension/iav_nuccore_isolates.tsv)**.
 
 * * * * *
 
