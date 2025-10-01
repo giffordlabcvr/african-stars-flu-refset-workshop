@@ -256,8 +256,23 @@ head -3 meta_clean.tsv
 
 <img src="../images/python.png" align="right" alt="" width="100"/>
 
-We map `nextclade.tsv` to `Isolate_Id` (the **same IDs** you put in FASTA headers).
+**What this step does (and why):**
 
+-   **Joins** your cleaned GISAID metadata (`meta_clean.tsv`) with **Nextclade** results (`nextclade.tsv`).
+-   Creates a **`strain`** column (required by Augur/Auspice) that **must exactly match** the sequence names in your FASTA.\
+    In our workflow we normalized headers to the GISAID ID, so we set: **`strain = Isolate_Id`** (e.g., `EPI_ISL_1234567`).
+-   Copies key Nextclade outputs:
+    -   `clade` → saved as **`nextclade_clade`**
+    -   `qc.overallStatus` → overall QC (`pass`/`warn`/`fail`)
+-   Writes **`metadata_final.tsv`**, which Augur uses for downsampling/refine and Auspice uses for coloring & metadata display.
+
+**Join key (important):**
+
+-   Nextclade's `seqName` mirrors your FASTA header. We **split at the first `|`** and use the **left token** (the GISAID ID).\
+    This is robust whether your headers had a pipe or were already just `EPI_ISL_...`.
+
+**Why Python *in Docker*?**\
+Reliable TSV parsing (quotes, embedded newlines) with **no local installs**. The `nextstrain/base` image has Python preinstalled; we mount your current folder into `/data` so files read/write locally.
 
 ```
 docker run --rm -i -v "$PWD":/data -w /data nextstrain/base \
@@ -308,9 +323,41 @@ print(f"Wrote {outp}. Unmatched in Nextclade: {len(missed)} (see {missed_log})")
 PY
 ```
 
-✅ **Checkpoint:** `metadata_final.tsv` exists.\
-(optional) `wc -l nextclade_unmatched_ids.txt` should be **0** (or small).
+✅ **Checkpoints**
 
+-   **File exists:** `ls -lh metadata_final.tsv`
+-   **Row counts look sane:** should be similar to `meta_clean.tsv`
+
+```
+echo "meta_clean rows:" $(tail -n +2 meta_clean.tsv | wc -l)
+echo "metadata_final rows:" $(tail -n +2 metadata_final.tsv | wc -l)
+```
+-   **Columns & order (strain first):**
+```
+head -1 metadata_final.tsv | tr '\t' '\n' | nl
+head -3 metadata_final.tsv
+```
+-   **`Unmatched IDs (ideally 0):**
+
+```
+wc -l nextclade_unmatched_ids.txt
+sed -n '1,10p' nextclade_unmatched_ids.txt
+```
+
+**Common causes of "unmatched" (and quick fixes):**
+
+-   Ran Nextclade on a **different FASTA** than the normalized + deduped one.\
+    → Re-run Nextclade on `gisaid_ha.acc.uniq.fasta`.
+-   **Whitespace** or invisible characters in IDs.\
+    → We call `.strip()`; also re-check your normalization step (1.3.1).
+-   Sequences filtered out **before** Nextclade.\
+    → Either ignore (fields will be blank) or re-run Nextclade on the current set.
+
+**Optional tweaks (if you want pre-curation):**
+
+-   You can later filter by `qc.overallStatus` in `augur filter`, or add a simple condition in this script to exclude `fail` sequences before writing `metadata_final.tsv`.
+
+  
 * * * * *
 
 ### 2.5 Augur: downsample, align, tree, refine
