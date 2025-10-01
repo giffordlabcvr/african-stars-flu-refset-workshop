@@ -361,6 +361,8 @@ sed -n '1,10p' nextclade_unmatched_ids.txt
 
 ### 2.5 Augur: downsample, align, tree, refine
 
+<img src="../images/nextstrain.png" align="right" alt="" width="100"/> 
+
 **Goal:** take your full dataset and produce a tidy, time-scaled tree that's fast to view in Auspice.\
 **Strategy:** Downsample to keep the tree readable (e.g., **≤10 sequences per clade per year** --- tune this to taste), then align, infer a tree, and refine it in time using collection dates.
 
