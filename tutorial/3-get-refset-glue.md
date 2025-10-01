@@ -1,13 +1,13 @@
-## 4. Command-line approach with Flu-GLUE
+## 3. Command-line approach with Flu-GLUE
 
  
 
-### 4.1. Download the isolate table
+### 3.1. Download the isolate table
 
 
 * * * * *
 
-### 4.2. Filter to select isolates
+### 3.2. Filter to select isolates
 
 ```
 # Step 1: initial filter
@@ -24,7 +24,7 @@ Now you can continue with subsampling or direct accession extraction from `H3N2_
 
 * * * * *
 
-### 4.3. Fetch HA sequences
+### 3.3. Fetch HA sequences
 
 ```
 : > H3N2_HA.fasta
@@ -42,7 +42,7 @@ head -n 2 H3N2_HA.fasta
 
 * * * * *
       
-### 4.4. QA using NextClade
+### 3.4. QA using NextClade
 
 ```
 # Nextclade
@@ -54,7 +54,7 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/nextclade:latest run \
 
 * * * * *
 
-### 4.5. Augur: tree + refine
+### 3.5. Augur: tree + refine
 
 ```
 docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur tree \
@@ -73,7 +73,7 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur refine \
 
 * * * * *
 
-### 4.6. View in Auspice
+### 3.6. View in Auspice
 
 ```
 # Export for Auspice + view
