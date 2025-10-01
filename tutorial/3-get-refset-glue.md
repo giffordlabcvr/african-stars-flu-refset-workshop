@@ -9,15 +9,60 @@
 
 ### 3.2. Filter to select isolates
 
+1) Map your TSV column names to positions (once)
+
+**Why:** The AWK filters below expect column indices. We'll quickly map the header names to indices so the rest is deterministic.
+
 ```
-# Step 1: initial filter
-awk -F'\t' -v rc="$REC_COL" -v hc="$HOST_COL" -v yc="$YEAR_COL" -v cc="$CTRY_COL" -v sc="$SEG4_COL" \
-  'NR>1 && $rc ~ /^H3N2/ && $hc=="Homo sapiens" && $yc>=2015 && $yc<=2024 && $sc!="" {print $yc "\t" $cc "\t" $sc}' \
-  iav_nuccore_isolates.tsv | sort -u > H3N2_candidates.tsv
+# Inspect header with numbered columns\
+head -1 iav_nuccore_isolates.tsv | tr '\t' '\n' | nl
+```
 
-# Step 2: exclude USA
-awk -F'\t' '$2 != "USA"' H3N2_candidates.tsv > H3N2_candidates_noUSA.tsv
+Now set environment variables to the **column numbers** (from the left, starting at 1):
 
+```
+# Example names; adjust numbers to match YOUR header indices
+export REC_COL=1            # column containing subtype/record info (e.g., "H3N2 ...")
+export HOST_COL=2           # host (e.g., "Homo sapiens")
+export YEAR_COL=3           # collection year (e.g., 2018)
+export CTRY_COL=4           # country (e.g., "USA")
+export SEG4_COL=5           # segment4_accession (HA nucleotide accession)
+```
+✅ **Checkpoint:** echo them back
+
+```
+echo $REC_COL $HOST_COL $YEAR_COL $CTRY_COL $SEG4_COL
+```
+
+2) Select H3N2 human candidates with HA accession present (2015--2024)
+
+**What:** Keep header; then keep rows where:
+
+-   subtype/record **starts with `H3N2`**
+-   **host = Homo sapiens**
+-   **year between 2015 and 2024**
+-   **segment4_accession present (non-empty)**
+
+
+```
+awk -F'\t' -v rc="$REC_COL" -v hc="$HOST_COL" -v yc="$YEAR_COL" -v sc="$SEG4_COL" \
+  'NR==1 || (NR>1 && $rc ~ /^H3N2/ && $hc=="Homo sapiens" && $yc>=2015 && $yc<=2024 && $sc!="")' \
+  iav_nuccore_isolates.tsv > H3N2_candidates.tsv
+```
+
+✅ **Checkpoint:**
+
+
+```
+wc -l H3N2_candidates.tsv
+head -3 H3N2_candidates.tsv
+```
+
+3) Exclude USA records (keep header)
+
+```
+awk -F'\t' -v CTRY_COL="$CTRY_COL" 'NR==1 || $CTRY_COL != "USA"' \
+  H3N2_candidates.tsv > H3N2_candidates_noUSA.tsv
 ```
 
 Now you can continue with subsampling or direct accession extraction from `H3N2_candidates_noUSA.tsv`.
