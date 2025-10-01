@@ -271,9 +271,12 @@ ls -lh auspice/H3N2.json
 
 
 ```
-docker run -it --rm -v "$PWD":/data -w /data -p 4000:4000 nextstrain/base \
-  auspice view --datasetDir auspice --host 0.0.0.0
-# open http://localhost:4000
+docker run -it --rm \
+  -v "$PWD":/data -w /data \
+  -p 4010:4000 \
+  nextstrain/base \
+  nextstrain view --host 0.0.0.0 auspice/
+# Open http://localhost:4010/H3N2
 ```
 
 Then open:
