@@ -59,7 +59,7 @@ Alphainfluenzavirus[Organism] AND HA[Gene] AND H3N2[All fields] AND 1500:1900[SL
 
 Note the differences in the FASTA header structures used in each file.
 
-Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/2-get-refset-ncbi-cli.md)**
+Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset-workshop/blob/main/tutorial/2-get-refset-gisaid.md)**
 
 * * * * *
 
