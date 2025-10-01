@@ -560,6 +560,8 @@ docker run -it --rm -v "$PWD":/data -w /data nextstrain/base \
 echo "Curated seqs:" $(grep -c '^>' curated.fasta)
 ```
 
+This sets you up for export & visualization. Next we’ll run augur export v2 and view in Auspice.
+
 ---
 
 ### Common gotchas (and fast fixes)
@@ -578,6 +580,7 @@ echo "Curated seqs:" $(grep -c '^>' curated.fasta)
 
 -   **Reproducible subsampling**\
     Use a seed on `augur filter` if your Augur build supports it (or switch to `nextstrain/cli:latest`).
+
 
 * * * * *
 
