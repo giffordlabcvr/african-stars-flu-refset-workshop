@@ -95,11 +95,11 @@ sed -n '1,5p' H3N2_HA_accessions.txt
 **Why batching:** URLs have length limits; batching **200 IDs** per request is safe & fast.
 
 ```
-: > H3N2_HA.fasta
+: > H3N2_HA.raw.fasta
 awk 'NR%200==1{printf "%s",$0; next} NR%200>1{printf ",%s",$0} NR%200==0{print ""} END{if(NR%200) print ""}' \
   H3N2_HA_accessions.txt \
 | while IFS= read -r batch; do
-    efetch -db nucleotide -id "$batch" -format fasta >> H3N2_HA.fasta
+    efetch -db nucleotide -id "$batch" -format fasta >> H3N2_HA.raw.fasta
     sleep 0.34   # be polite to NCBI (export NCBI_API_KEY=... to go faster)
   done
 ```
@@ -107,11 +107,11 @@ awk 'NR%200==1{printf "%s",$0; next} NR%200>1{printf ",%s",$0} NR%200==0{print "
 ✅ Checkpoint:
 
 ```
-grep -c '^>' H3N2_HA.fasta
+grep -c '^>' H3N2_HA.raw.fasta
 ```
 
 ```
-head -n 2 H3N2_HA.fasta
+head -n 2 H3N2_HA.raw.fasta
 ```
 
 * * * * *
