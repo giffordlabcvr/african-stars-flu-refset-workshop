@@ -1,6 +1,5 @@
 ## 4. Command-line approach with Flu-GLUE
 
-<img src="../images/glue.png" align="right" alt="" width="180"/>
 
 
 ### 4.1. Download the isolate table
@@ -41,6 +40,7 @@ grep -c '^>' H3N2_HA.fasta
 head -n 2 H3N2_HA.fasta
 ```
 
+* * * * *
       
 ### 4.4. QA using NextClade
 
@@ -51,6 +51,8 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/nextclade:latest run \
   --output-dir nextclade_H3N2 \
   H3N2_HA.fasta
 ```
+
+* * * * *
 
 ### 4.5. Augur: tree + refine
 
@@ -68,6 +70,8 @@ docker run --rm -it -v "$PWD":/data -w /data nextstrain/base augur refine \
   --output-tree H3N2.refined.tree.nwk \
   --output-node-data H3N2.refined.node.json
 ```
+
+* * * * *
 
 ### 4.6. View in Auspice
 
