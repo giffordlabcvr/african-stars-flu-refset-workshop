@@ -7,9 +7,7 @@
 
 * * * * *
 
-### 3.2. Filter to select isolates
-
-1) Map your TSV column names to positions (once)
+### 3.2. Map your TSV column names to positions (once)
 
 **Why:** The AWK filters below expect column indices. We'll quickly map the header names to indices so the rest is deterministic.
 
@@ -34,7 +32,7 @@ export SEG4_COL=5           # segment4_accession (HA nucleotide accession)
 echo $REC_COL $HOST_COL $YEAR_COL $CTRY_COL $SEG4_COL
 ```
 
-2) Select H3N2 human candidates with HA accession present (2015--2024)
+### 3.3. Select H3N2 human candidates with HA accession present (2015--2024)
 
 **What:** Keep header; then keep rows where:
 
@@ -58,18 +56,38 @@ wc -l H3N2_candidates.tsv
 head -3 H3N2_candidates.tsv
 ```
 
-3) Exclude USA records (keep header)
+### 3.4. Exclude USA records (keep header)
 
 ```
 awk -F'\t' -v CTRY_COL="$CTRY_COL" 'NR==1 || $CTRY_COL != "USA"' \
   H3N2_candidates.tsv > H3N2_candidates_noUSA.tsv
 ```
 
-Now you can continue with subsampling or direct accession extraction from `H3N2_candidates_noUSA.tsv`.
+✅ **Checkpoint:**
+
+```
+grep -c $'\tUSA\t' H3N2_candidates_noUSA.tsv   # ideally 0
+```
+
+### 3.5. Extract HA (segment 4) accessions (unique)
+
+```
+awk -F'\t' -v sc="$SEG4_COL" 'NR>1 && $sc!="" {print $sc}' H3N2_candidates_noUSA.tsv \
+  | sort -u > H3N2_HA_accessions.txt
+```
+
+✅ **Checkpoint:**
+
+```
+wc -l H3N2_HA_accessions.txt
+sed -n '1,5p' H3N2_HA_accessions.txt
+```
 
 * * * * *
 
-### 3.3. Fetch HA sequences
+### 3.6. Fetch HA sequences from NCBI (batched efetch)
+
+**Why batching:** URLs have length limits; batching **200 IDs** per request is safe & fast.
 
 ```
 : > H3N2_HA.fasta
@@ -79,15 +97,68 @@ awk 'NR%200==1{printf "%s",$0; next} NR%200>1{printf ",%s",$0} NR%200==0{print "
     efetch -db nucleotide -id "$batch" -format fasta >> H3N2_HA.fasta
     sleep 0.34   # be polite to NCBI (export NCBI_API_KEY=... to go faster)
   done
+```
 
-# Quick check
+✅ Checkpoint:
+
+```
 grep -c '^>' H3N2_HA.fasta
 head -n 2 H3N2_HA.fasta
 ```
 
 * * * * *
       
-### 3.4. QA using NextClade
+### 3.7. Normalize FASTA headers to ACCESSION.VERSION only
+
+**Why:** Some efetch headers contain extra text; we keep just the first whitespace-separated token so names are predictable.
+
+```
+awk '
+  /^>/ {
+    split($0, a, " ");   # keep only >ACCESSION.VERSION
+    print a[1];
+    next
+  }
+  { print }
+' H3N2_HA.raw.fasta > H3N2_HA.fasta
+```
+
+✅ Checkpoint:
+
+```
+head -4 H3N2_HA.fasta
+```
+
+* * * * *
+
+
+### 3.7. Build a sequence metadata table with explicit `seq_id`
+
+We'll **prepend a `seq_id` column** that equals the **segment4_accession**, preserving all original columns. This keeps a clean join key for tools that expect `seq_id`.
+
+```
+awk -F'\t' -v OFS='\t' -v sc="$SEG4_COL" '
+  NR==1 { print "seq_id", $0; next }
+  { print $sc, $0 }
+' H3N2_candidates_noUSA.tsv > H3N2_HA.metadata.tsv
+```
+
+✅ **Checkpoint:**
+
+```
+head -1 H3N2_HA.metadata.tsv | tr '\t' '\n' | nl
+sed -n '2,4p' H3N2_HA.metadata.tsv
+```
+
+### 3.8. Nextclade: fetch H3N2 HA dataset & run
+
+Pull image (once)
+
+
+```
+docker pull nextstrain/nextclade:latest
+```
+
 
 ```
 # Nextclade
