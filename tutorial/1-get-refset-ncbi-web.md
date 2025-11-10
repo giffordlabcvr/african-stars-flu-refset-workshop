@@ -63,6 +63,8 @@ Go to **[next section](https://github.com/giffordlabcvr/african-stars-flu-refset
 
 * * * * *
 
+Expected numbers (2025/10/25)
+
 | Query # | Title | Number of Results |
 | --- | --- | --- |
 | 1 | Get all influenza A virus entries | 1,433,165 |
